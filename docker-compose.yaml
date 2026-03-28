@@ -1,0 +1,46 @@
+services:
+  db:
+    container_name: app-db
+    image: mysql:8.0
+    expose:
+      - "3306"
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      # 可选：设置字符集和排序规则（解决中文乱码问题）
+      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
+      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
+    volumes:
+      - ./mysql-data:/var/lib/mysql  # 挂载（持久化 MySQL 数据）
+    restart: always
+    # 健康检查 确保后续的 Django 服务不会因 MySQL 未就绪而失败。
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - app-network
+
+
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    restart: always
+    depends_on:
+      db:
+        # 健康检查后才启动app
+        condition: service_healthy
+    networks:
+      - app-network
+
+
+# 定义网络（让服务之间可以互相访问）
+networks:
+  app-network:
+    driver: bridge
