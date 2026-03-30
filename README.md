@@ -19,9 +19,9 @@ SECRET_KEY='django-insecure-(-yz_tpq1vm%g_-146461*ub52olpp2wm#qxdg535$)'
 # 域名
 DOMAIN=example.com
 
-DB_HOST=db
+DB_HOST=mall-db
 # 数据库名
-MYSQL_DATABASE=app
+MYSQL_DATABASE=mall-app
 # 数据库密码
 MYSQL_ROOT_PASSWORD=123456789
 
