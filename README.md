@@ -17,7 +17,7 @@ DEBUG=False
 SECRET_KEY='django-insecure-(-yz_tpq1vm%g_-146461*ub52olpp2wm#qxdg535$)'
 
 # 域名
-DOMAIN=example.com
+WEB_HOST=example.com
 
 DB_HOST=mall-db
 # 数据库名

@@ -39,11 +39,11 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "http://localhost",]
-DOMAIN = config('DOMAIN')
-if DOMAIN:
-    ALLOWED_HOSTS.append(DOMAIN)
+WEB_HOST = config('WEB_HOST')
+if WEB_HOST:
+    ALLOWED_HOSTS.append(WEB_HOST)
     CSRF_TRUSTED_ORIGINS += [
-        f'https://{DOMAIN}',
+        f'https://{WEB_HOST}',
     ]
 
 if not DEBUG:
