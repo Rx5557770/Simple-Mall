@@ -14,7 +14,7 @@ class Order(models.Model):
         success = 1, '已支付'
         fail = 2, '未支付'
 
-    trade_id = models.CharField(editable=False, verbose_name='订单ID')
+    trade_id = models.CharField(editable=False, max_length=100, verbose_name='订单ID')
     order_id = models.CharField(max_length=100, null=True, blank=True, verbose_name='支付平台订单号')
     amount = models.DecimalField(decimal_places=2, max_digits=10, verbose_name='金额')
     payment = models.IntegerField(choices=Payment.choices, verbose_name='支付方式')
