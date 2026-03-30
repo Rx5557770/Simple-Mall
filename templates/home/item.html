@@ -1,0 +1,54 @@
+<!-- templates/item.html -->
+{% extends 'home/base.html' %}
+
+{% block title %}商品列表 - {{ home.web_title }}{% endblock %}
+
+{% block content %}
+    <div class="py-10 2xl:py-8 bg-gray-50 min-h-screen">
+        {% for category in categories %}
+        <div class="py-10 2xl:py-7 px-4 md:px-6 2xl:px-3 mb-12 2xl:mb-8 max-w-6xl 2xl:max-w-5xl mx-auto">
+
+            <div class="flex items-center gap-4 2xl:gap-3 mb-8 2xl:mb-6">
+                <div class="h-8 2xl:h-7 w-1.5 bg-primary rounded-full"></div>
+                <h2 class="text-2xl md:text-3xl 2xl:text-2xl font-bold text-slate-800">
+                    {{category.name}}
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 2xl:gap-4">
+
+                {% for item in category.items.all %}
+                {% if item.is_show %}
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 border border-slate-100 flex flex-col h-full overflow-hidden group">
+                    <div class="p-6 2xl:p-5 flex-grow flex flex-col">
+                        <h3 class="text-lg 2xl:text-base font-bold text-slate-800 mb-3 2xl:mb-2 group-hover:text-primary transition-colors">{{ item.name }}</h3>
+                        <p class="text-slate-500 text-sm mb-6 2xl:mb-5 line-clamp-3 flex-grow leading-relaxed">
+                            {% if item.desc %}
+                                {{ item.desc }}
+                            {% else %}
+                                该商品暂无详细介绍，请联系客服咨询。
+                            {% endif %}
+                        </p>
+                        <div class="mt-auto flex justify-between items-center pt-4 2xl:pt-3 border-t border-slate-50">
+                            <span class="text-xl 2xl:text-lg font-bold text-teal-600">{{ item.price }}</span>
+                            {% if item.id in purchase %}
+                                <span class="bg-slate-100 text-slate-400 px-4 2xl:px-3 py-2 2xl:py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide cursor-not-allowed">
+                                    已购买
+                                </span>
+                            {% else %}
+                                <a href="{% url 'home:trade:create_order' item.id %}"
+                                   class="bg-teal-600 text-white px-5 2xl:px-4 py-2 2xl:py-1.5 rounded-lg text-sm font-bold hover:bg-teal-700 transition shadow-md shadow-teal-600/20 active:scale-95 transform inline-block">
+                                    立即购买
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

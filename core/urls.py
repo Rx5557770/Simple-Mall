@@ -26,7 +26,8 @@ from django.urls import path, include
 # from apps.account.views import AccountViewSet
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('apps.account.urls'))
+    path('auth/', include('apps.account.urls')),
+    path('', include('apps.front.urls')),
 ]
 
 # # Viewset路由

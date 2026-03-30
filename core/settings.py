@@ -33,8 +33,22 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+]
 
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1", "http://localhost",]
+DOMAIN = config('DOMAIN')
+if DOMAIN:
+    ALLOWED_HOSTS.append(DOMAIN)
+    CSRF_TRUSTED_ORIGINS += [
+        f'https://{DOMAIN}',
+    ]
+
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 # Application definition
 
@@ -49,6 +63,9 @@ INSTALLED_APPS = [
     # 'rest_framework',
     # 'rest_framework_simplejwt',
     'account',
+    'item',
+    'trade',
+    'front',
 ]
 
 MIDDLEWARE = [
@@ -85,24 +102,24 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# mysql配置
 # DATABASES = {
 #     'default': {
-#         'ENGINE': config('ENGINE', 'django.db.backends.mysql'),
-#         'NAME': config('MYSQL_DATABASE'),
-#         'USER': config('DB_USER', 'root'),
-#         'PASSWORD': config('MYSQL_ROOT_PASSWORD'),
-#         'HOST': config('DB_HOST', 'localhost'),
-#         'PORT': config('DB_PORT', '3306'),
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+# mysql配置
+DATABASES = {
+    'default': {
+        'ENGINE': config('ENGINE', 'django.db.backends.mysql'),
+        'NAME': config('MYSQL_DATABASE'),
+        'USER': config('DB_USER', 'root'),
+        'PASSWORD': config('MYSQL_ROOT_PASSWORD'),
+        'HOST': config('DB_HOST', 'localhost'),
+        'PORT': config('DB_PORT', '3306'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -151,7 +168,7 @@ MEDIA_ROOT = BASE_DIR / 'media'  # 存储上传文件的位置
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/auth/login'
-# AUTH_USER_MODEL = 'account.User' # 自定义用户
+AUTH_USER_MODEL = 'account.CustomUser' # 自定义用户
 
 # ### drf 配置 ###
 # REST_FRAMEWORK = {
@@ -208,3 +225,17 @@ LOGIN_URL = '/auth/login'
 #     "USER_ID_CLAIM": "user_id",  # JWT中用户ID的声明字段
 #     "CHECK_USER_IS_ACTIVE": True,  # 检查用户是否激活
 # }
+
+# 后台首页
+# SIMPLEUI_HOME_PAGE = 'https://www.baidu.com'
+
+# 自定义左侧图标
+SIMPLEUI_ICON = {
+    '项目管理': 'fa-chisel fa-regular fa-list',
+    '项目': 'fa-chisel fa-regular fa-star'
+}
+
+
+
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

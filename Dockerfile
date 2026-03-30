@@ -12,6 +12,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # 系统依赖安装后，再复制项目依赖清单
 COPY requirements.txt /app
 
+# 安装nc 配合 entrypoint.sh
+RUN apt-get update && apt-get install -y netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
 # 再运行依赖安装命令
 RUN pip install --no-cache-dir -r requirements.txt
 

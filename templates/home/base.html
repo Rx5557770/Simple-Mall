@@ -1,0 +1,123 @@
+<!-- templates/base.html -->
+{% load static %}
+{% load web_info %}
+{% get_info as home %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ home.web_title }}{% endblock %}</title>
+    <script src="{% static 'tailwindcss.js' %}"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f766e',
+                        secondary: '#f0fdfa',
+                        dark: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    {% block extra_css %}{% endblock %}
+    <style>
+        body.menu-open {
+            overflow: hidden;
+        }
+        #mobile-menu {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-700 font-sans flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl 2xl:max-w-5xl mx-auto px-4 2xl:px-3 py-4 2xl:py-3.5 flex justify-between items-center">
+            <a href="{% url 'home:index' %}" class="text-2xl 2xl:text-xl font-bold text-primary tracking-tight flex items-center gap-2 shrink-0">
+                <svg class="w-8 h-8 2xl:w-7 2xl:h-7 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <span class="whitespace-nowrap">{{ home.web_title }}</span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center space-x-8 2xl:space-x-6">
+                <a href="{% url 'home:index' %}" class="{% if request.resolver_match.url_name == 'index' %}text-primary font-semibold{% else %}text-slate-600 hover:text-primary transition font-medium{% endif %}">首页</a>
+                <a href="{% url 'home:items' %}" class="{% if request.resolver_match.url_name == 'items' %}text-primary font-semibold{% else %}text-slate-600 hover:text-primary transition font-medium{% endif %}">商品列表</a>
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'home:profile' %}" class="{% if request.resolver_match.url_name == 'profile' %}text-primary font-semibold{% else %}text-slate-600 hover:text-primary transition font-medium{% endif %}">个人中心</a>
+                <a href="{% url 'auth:logout' %}" class="block text-center px-4 2xl:px-3.5 py-2.5 2xl:py-2 rounded-lg bg-primary text-white hover:bg-teal-800 font-medium transition shadow-sm">退出登录</a>
+                {% endif %}
+                {% if not user.is_authenticated %}
+                <div class="w-px h-5 bg-slate-200 mx-2"></div>
+                <a href="{% url 'auth:login' %}" class="text-slate-600 hover:text-primary transition text-sm font-medium">登录</a>
+                <a href="{% url 'auth:register' %}" class="bg-primary text-white px-5 2xl:px-4 py-2 2xl:py-1.5 rounded-full text-sm font-medium hover:bg-teal-800 transition shadow-md shadow-teal-700/20">注册</a>
+                {% endif %}
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-600 focus:outline-none p-2 hover:bg-slate-100 rounded-lg transition shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 w-full bg-white border-t border-slate-100 shadow-xl z-40 opacity-0 -translate-y-2">
+            <div class="px-4 py-4 space-y-2 max-h-[80vh] overflow-y-auto">
+                <a href="{% url 'home:index' %}" class="block px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-primary font-medium transition">首页</a>
+                <a href="{% url 'home:items' %}" class="block px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-primary font-medium transition">商品列表</a>
+                <a href="{% url 'home:profile' %}" class="block px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-primary font-medium transition">个人中心</a>
+
+                {% if not user.is_authenticated %}
+                <div class="border-t border-slate-100 my-2"></div>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <a href="{% url 'auth:login' %}" class="block w-full text-center px-4 py-2.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium transition">登录</a>
+                    <a href="{% url 'auth:register' %}" class="block w-full text-center px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-teal-800 font-medium transition shadow-sm">注册</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow relative">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-dark text-slate-400 py-10 2xl:py-8 mt-auto border-t border-slate-800">
+        <div class="max-w-6xl 2xl:max-w-5xl mx-auto px-4 2xl:px-3 text-center">
+            <p class="text-sm">&copy; 2026 {{ home.web_title }}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const body = document.body;
+
+        if(menuBtn) {
+            menuBtn.addEventListener('click', function() {
+                const isHidden = mobileMenu.classList.contains('hidden');
+
+                if (isHidden) {
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.offsetHeight;
+                    mobileMenu.classList.remove('opacity-0', '-translate-y-2');
+                    mobileMenu.classList.add('opacity-100', 'translate-y-0');
+                    body.classList.add('menu-open');
+                } else {
+                    mobileMenu.classList.add('opacity-0', '-translate-y-2');
+                    mobileMenu.classList.remove('opacity-100', 'translate-y-0');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                    }, 300);
+                    body.classList.remove('menu-open');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

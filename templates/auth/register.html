@@ -1,0 +1,156 @@
+{% extends "auth/base.html" %}
+
+{% block title %}用户注册{% endblock %}
+
+{% block content %}
+<div class="w-full max-w-[400px] bg-white rounded-xl shadow-lg border border-stone-100 overflow-hidden fade-in mx-auto mt-10">
+    <div class="p-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-50 text-orange-600 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight text-stone-800">创建账号</h1>
+            <p class="text-sm text-stone-500 mt-2">加入我们，开启全新体验</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" class="space-y-4" novalidate>
+            {% csrf_token %}
+
+            <!-- Username Field -->
+            <div>
+                <label for="id_username" class="block text-sm font-medium text-stone-700 mb-1">用户名</label>
+                <input type="text" id="id_username" name="username" value="{{ form.username.value|default:'' }}"
+                    class="w-full px-4 py-2.5 bg-stone-50 border {% if form.username.errors %}border-red-500 focus:ring-red-200 focus:border-red-500{% else %}border-stone-200 focus:ring-orange-100 focus:border-orange-500{% endif %} rounded-lg focus:ring-2 transition-all outline-none text-sm placeholder-stone-400 text-stone-800"
+                    placeholder="User123" required>
+
+                {% if form.username.errors %}
+                    <p class="text-xs text-red-500 mt-1 flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        {{ form.username.errors.0 }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Email Field -->
+            <div>
+                <label for="id_email" class="block text-sm font-medium text-stone-700 mb-1">电子邮箱</label>
+                <input type="email" id="id_email" name="email" value="{{ form.email.value|default:'' }}"
+                    class="w-full px-4 py-2.5 bg-stone-50 border {% if form.email.errors %}border-red-500 focus:ring-red-200 focus:border-red-500{% else %}border-stone-200 focus:ring-orange-100 focus:border-orange-500{% endif %} rounded-lg focus:ring-2 transition-all outline-none text-sm placeholder-stone-400 text-stone-800"
+                    placeholder="name@example.com" required>
+
+                {% if form.email.errors %}
+                    <p class="text-xs text-red-500 mt-1 flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        {{ form.email.errors.0 }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label for="id_password" class="block text-sm font-medium text-stone-700 mb-1">密码</label>
+                <input type="password" id="id_password" name="password"
+                    class="w-full px-4 py-2.5 bg-stone-50 border {% if form.password.errors %}border-red-500 focus:ring-red-200 focus:border-red-500{% else %}border-stone-200 focus:ring-orange-100 focus:border-orange-500{% endif %} rounded-lg focus:ring-2 transition-all outline-none text-sm placeholder-stone-400 text-stone-800"
+                    placeholder="至少 6 位字符" required>
+
+                {% if form.password.errors %}
+                    <p class="text-xs text-red-500 mt-1 flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        {{ form.password.errors.0 }}
+                    </p>
+                {% else %}
+                    <p id="passwordClientError" class="text-xs text-red-500 mt-1 hidden flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        密码长度至少需要 6 位
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div>
+                <label for="id_password2" class="block text-sm font-medium text-stone-700 mb-1">确认密码</label>
+                <input type="password" id="id_password2" name="password2"
+                    class="w-full px-4 py-2.5 bg-stone-50 border {% if form.password2.errors %}border-red-500 focus:ring-red-200 focus:border-red-500{% else %}border-stone-200 focus:ring-orange-100 focus:border-orange-500{% endif %} rounded-lg focus:ring-2 transition-all outline-none text-sm placeholder-stone-400 text-stone-800"
+                    placeholder="再次输入密码" required>
+
+                {% if form.password2.errors %}
+                    <p class="text-xs text-red-500 mt-1 flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        {{ form.password2.errors.0 }}
+                    </p>
+                {% else %}
+                    <p id="password2ClientError" class="text-xs text-red-500 mt-1 hidden flex items-center">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        两次输入的密码不一致
+                    </p>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 rounded-lg transition-all shadow-md shadow-orange-200 mt-2 active:scale-[0.98]">
+                注册账号
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-sm text-stone-500">
+            已有账号？
+            <a href="{% url 'auth:login' %}" class="text-orange-600 font-medium hover:underline hover:text-orange-700">返回登录</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const password = document.getElementById('id_password');
+        const password2 = document.getElementById('id_password2');
+        const passError = document.getElementById('passwordClientError');
+        const pass2Error = document.getElementById('password2ClientError');
+        let isValid = true;
+
+        // Helper to reset styles
+        const resetField = (el, errorEl) => {
+            el.classList.remove('border-red-500', 'focus:ring-red-200', 'focus:border-red-500', 'animate-shake');
+            el.classList.add('border-stone-200', 'focus:ring-orange-100', 'focus:border-orange-500');
+            if(errorEl) errorEl.classList.add('hidden');
+        };
+
+        // Reset all first
+        resetField(password, passError);
+        resetField(password2, pass2Error);
+
+        // 1. Validate Password Length
+        if (password.value.length > 0 && password.value.length < 6) {
+            e.preventDefault();
+            isValid = false;
+            passError.classList.remove('hidden');
+            password.classList.remove('border-stone-200', 'focus:ring-orange-100', 'focus:border-orange-500');
+            password.classList.add('border-red-500', 'focus:ring-red-200', 'focus:border-red-500', 'animate-shake');
+        }
+
+        // 2. Validate Password Match (only if both have values)
+        if (password.value && password2.value && password.value !== password2.value) {
+            e.preventDefault();
+            isValid = false;
+            pass2Error.classList.remove('hidden');
+            password2.classList.remove('border-stone-200', 'focus:ring-orange-100', 'focus:border-orange-500');
+            password2.classList.add('border-red-500', 'focus:ring-red-200', 'focus:border-red-500', 'animate-shake');
+        }
+    });
+</script>
+<style>
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+    }
+    .animate-shake {
+        animation: shake 0.3s ease-in-out;
+    }
+</style>
+{% endblock %}

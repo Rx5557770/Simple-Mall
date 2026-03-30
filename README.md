@@ -1,21 +1,55 @@
-### Default-Template-Django
-使用了Django默认后台（采用simpleui）+ Drf + Jwt。
-Django版本:5.2
-项目结构已经基本完善，拉取到本地并在项目根目录创建 `.env` 按下面格式开箱即用（SECRET_KEY自行更改）。
+### Simple-Mall
+该项目是用来资源转卖的，例如你的网盘有很多资源，你会采取发卡网、商城、等等，还要额外配置易支付、当面付等很是繁琐。本项目使用vd免签作为支付接口。
+
+![后台](/public/admin.png)
+
+![商品](/public/goods.png)
+
+![我的](/public/profile.png)
+
+#### 部署
+
+首先拉取文件到本地，在项目根目录下创建 `.env` 文件填入内容
 
 ```dotenv
-DEBUG=True
+DEBUG=False
+# 自定义key值
 SECRET_KEY='django-insecure-(-yz_tpq1vm%g_-146461*ub52olpp2wm#qxdg535$)'
 
+# 域名
+DOMAIN=example.com
 
-# 部署时候用到的mysql，开发阶段不需要设置
-#MYSQL_DATABASE=app
-#MYSQL_ROOT_PASSWORD=123456
+DB_HOST=db
+# 数据库名
+MYSQL_DATABASE=app
+# 数据库密码
+MYSQL_ROOT_PASSWORD=123456789
+
+# vd免签配置
+V_API_URL=https://example.com/
+V_KEY=key
+# 域名修改自己的
+NOTIFY_URL=https://example.com/orders/pay-back/
 ```
 
-基本开发配置已经完善，拥有以下配置:
-1. 统一了Drf的错误处理
-2. 响应格式（确切地说是json类型的响应包含Django的JsonResponse进行了返回格式自定义）
-3. simplejwt 登录时的响应内容进行了统一化（自定义载荷和响应内容）
-4. 日志采用loguru，在 `settings.py` 导出使用。
-5. 项目部署采用gunicorn 且内置了Dockerfile和docker-compose.yaml 方便部署。
+安装nginx后在 `/etc/nginx/conf.d/` 目录创建 `simple-mall.conf`
+
+```nginx
+server {
+    listen 80;
+    server_name _;
+    # 静态文件（对应 Django collectstatic 的 STATIC_ROOT）
+    location /static/ {
+        alias /app/staticfiles/;
+    }
+    # 反代 Django/Gunicorn
+    location / {
+        proxy_pass http://mall-app:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+然后运行 `docker-compose up -d`

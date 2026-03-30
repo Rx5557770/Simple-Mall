@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 
 
-class AccountConfig(AppConfig):
+class FrontConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.account'
-    verbose_name = '账号管理'
+    name = 'apps.front'
+    verbose_name = '网站管理'

@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: app-db
+    container_name: mall-db
     image: mysql:8.0
     expose:
       - "3306"
@@ -26,11 +26,12 @@ services:
 
   app:
     build: .
-    container_name: app
+    container_name: mall-app
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+    command: /app/entrypoint.sh
     restart: always
     depends_on:
       db:
